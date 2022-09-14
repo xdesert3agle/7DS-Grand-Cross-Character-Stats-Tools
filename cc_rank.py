@@ -72,8 +72,8 @@ class Database:
 
 class Character:
     COSMETIC_MAX_WEAPON_BASE_ATK_INCREASE = 210
-    COSMETIC_MAX_ARMOR_BASE_DEF_INCREASE = 210
-    COSMETIC_MAX_HAIR_BASE_HP_INCREASE = 1650
+    COSMETIC_MAX_OUTFIT_BASE_DEF_INCREASE = 210
+    COSMETIC_MAX_HEADPIECE_BASE_HP_INCREASE = 1650
 
     EQUIP_UR_BRACE_BASE_ATK = 1640
     EQUIP_UR_RING_BASE_ATK = 840
@@ -92,21 +92,21 @@ class Character:
         self.defense = defense
         self.hp = hp
     
-    def get_max_stats(self):
+    def get_max_stats(self, weapon_count = 5, armor_count = 5, hair_count = 5):
         
         # Estadísticas base máximas (sin equipamiento)
         max_base_atk = (self.attack
-            + (self.COSMETIC_MAX_WEAPON_BASE_ATK_INCREASE * 5)
+            + (self.COSMETIC_MAX_WEAPON_BASE_ATK_INCREASE * weapon_count)
             + self.EQUIP_UR_BRACE_BASE_ATK
             + self.EQUIP_UR_RING_BASE_ATK)
 
         max_base_def = (self.defense
-            + (self.COSMETIC_MAX_ARMOR_BASE_DEF_INCREASE * 5)
+            + (self.COSMETIC_MAX_OUTFIT_BASE_DEF_INCREASE * armor_count)
             + self.EQUIP_UR_NECKLACE_BASE_DEF
             + self.EQUIP_UR_EARRINGS_BASE_DEF)
 
         max_base_hp = (self.hp
-            + (self.COSMETIC_MAX_HAIR_BASE_HP_INCREASE * 5)
+            + (self.COSMETIC_MAX_HEADPIECE_BASE_HP_INCREASE * hair_count)
             + self.EQUIP_UR_BELT_BASE_HP
             + self.EQUIP_UR_RUNE_BASE_HP)
 
@@ -127,9 +127,9 @@ class Character:
 def show_ranking(order='cc'):
     print(db.get_sorted_data(order))
 
-def max_stats(character_name):
+def max_stats(character_name, weapons = 5, outfits = 5, headpieces = 5):
     character = db.get_character(character_name)
-    character.get_max_stats()
+    character.get_max_stats(weapons, outfits, headpieces)
 
 
 # Main code
