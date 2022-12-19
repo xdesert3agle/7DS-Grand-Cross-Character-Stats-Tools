@@ -5,6 +5,7 @@ import math
 from bs4 import BeautifulSoup
 import pandas as pd
 import const
+import numpy as np
 
 class Database:
     url = 'https://gamewith.jp/7taizai/article/show/158813'
@@ -12,6 +13,7 @@ class Database:
     char_names = ''
     characters = []
     characters_dict = []
+    new_characters = []
 
     def fetch_html(self):
         try:
@@ -46,7 +48,7 @@ class Database:
             cc = row['data-col5']
 
             c = Character(
-                self.translate_name(name),
+                self.translate_name(name, hp, cc),
                 int(cc.replace(',', '')),
                 int(attack.replace(',', '')),
                 int(defense.replace(',', '')),
@@ -55,8 +57,12 @@ class Database:
             self.characters.append(c)
             self.characters_dict.append(vars(c))
     
-    def translate_name(self, name):
-        return self.char_names[name] if name in self.char_names else 'Sin nombre'
+    def translate_name(self, name, hp, cc):
+        if name in self.char_names:
+            return self.char_names[name]
+        else:
+            self.new_characters.append(f"'{name}':''\n")
+            return 'Sin nombre'
     
     def get_character(self, name):
         return [x for x in self.characters if x.name == name][0]
@@ -65,7 +71,16 @@ class Database:
         index_name = {'name': 'name', 'cc': 'cc', 'atk': 'attack', 'def': 'defense', 'hp': 'hp'}
         sorted_data = sorted(self.characters_dict, key=lambda dict: dict[index_name[param]], reverse=True)
 
-        return pd.DataFrame(sorted_data).to_string()
+        df = pd.DataFrame(sorted_data)
+        df.index = np.arange(1, len(df) + 1)
+        return df.to_string()
+
+    def new_character_printer (self):
+        if self.new_characters:
+            with open(const.NEW_UNITS_FILENAME, 'w', encoding='utf-8') as f:
+                for character in self.new_characters:
+                    f.write(str(character))
+                f.close()
 
 
 class Character:
@@ -135,6 +150,7 @@ db = Database()
 db.fetch_html()
 db.fetch_jp_translated_char_names()
 db.fetch_data()
+db.new_character_printer()
 
 parser = argh.ArghParser()
 parser.add_commands([show_ranking, max_stats])
