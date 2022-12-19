@@ -32,8 +32,6 @@ class Database:
 
         except requests.exceptions.RequestException as err:
             print(f"Error: {err}")
-        
-        
 
     def fetch_jp_translated_char_names(self):
         with open(const.UNITS_FILENAME, "r", encoding="utf8") as f:
@@ -58,7 +56,7 @@ class Database:
             self.characters_dict.append(vars(c))
     
     def translate_name(self, name):
-        return self.char_names[name]
+        return self.char_names[name] if name in self.char_names else 'Sin nombre'
     
     def get_character(self, name):
         return [x for x in self.characters if x.name == name][0]
