@@ -73,7 +73,15 @@ class Database:
 
         df = pd.DataFrame(sorted_data)
         df.index = np.arange(1, len(df) + 1)
-        return df.to_string()
+        
+        df = df[::-1]
+        df_string = df.to_string()
+
+        df_string = "#" + df_string[1:]
+        header = df_string.split('\n')[0]
+        df_string += "\n" + header
+
+        return df_string
 
     def new_character_printer (self):
         if self.new_characters:
