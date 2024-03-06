@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import const
 import numpy as np
+from difflib import SequenceMatcher
+from Levenshtein import distance
 
 class Database:
     url = 'https://gamewith.jp/7taizai/article/show/158813'
@@ -89,6 +91,7 @@ class Database:
                 for character in self.new_characters:
                     f.write(str(character))
                 f.close()
+            
 
 
 class Character:
@@ -144,14 +147,30 @@ class Character:
         print(f'HP + DEF:\n · ATK:\t{max_non_boosted_atk:,}\n · DEF:\t{max_boosted_def:,}\n · HP:\t{max_boosted_hp:,}'.replace(',', '.'))
 
 
+# Util
+def compare(s1):
+    matches = []
+    for i in range(0, len(db.characters_dict)):
+        matches.append({
+            'name': db.characters[i].name,
+            'ratio': SequenceMatcher(None, s1, db.characters[i].name).ratio()
+        })
+    
+    return max(matches, key=lambda x:x['ratio']).get('name')
+
+
 # Argh commands
 def show_ranking(order='cc'):
     print(db.get_sorted_data(order))
 
 def max_stats(character_name, weapons = 5, outfits = 5, headpieces = 5):
-    character = db.get_character(character_name)
-    character.get_max_stats(weapons, outfits, headpieces)
+    found_name = compare(character_name)
 
+    if (character_name != found_name):
+        print(f'Mira que eres gilipollas, el nombre bueno era {found_name}')
+
+    character = db.get_character(found_name)
+    character.get_max_stats(weapons, outfits, headpieces)
 
 # Main code
 db = Database()
