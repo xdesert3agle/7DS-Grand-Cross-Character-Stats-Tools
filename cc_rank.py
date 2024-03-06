@@ -61,7 +61,7 @@ class Database:
         if name in self.char_names:
             return self.char_names[name]
         else:
-            self.new_characters.append(f"'{name}': ''\n")
+            self.new_characters.append(f"'{name}': '',\n")
             return 'Sin nombre'
     
     def get_character(self, name):
