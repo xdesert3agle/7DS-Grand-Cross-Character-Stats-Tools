@@ -167,7 +167,7 @@ def max_stats(character_name, weapons = 5, outfits = 5, headpieces = 5):
     found_name = compare(character_name)
 
     if (character_name != found_name):
-        print(f'Mira que eres gilipollas, el nombre bueno era {found_name}')
+        print(f'Mira que eres gilipollas, el nombre bueno era \'{found_name}\'')
 
     character = db.get_character(found_name)
     character.get_max_stats(weapons, outfits, headpieces)
